@@ -60,37 +60,59 @@ def check_block(new_num, row, col):
 def sudoku_solver(sudoku):
     solve_order = []
     cond = False
+    cont=0
     while cond == False:
         cond = True
         for row in range(0,9):
             for col in range(0,9):
                 if int(sudoku[row][col])==0:
-                    if max(check_row(1,row), check_col(1,col), check_block(1,row,col)) <= 9:
+                    max_check = max(check_row(1,row), check_col(1,col), check_block(1,row,col))
+                    while max_check != max(check_row(max_check,row), check_col(max_check,col), check_block(max_check,row,col)):
+                        max_check = max(check_row(max_check,row), check_col(max_check,col), check_block(max_check,row,col))
+                    if max_check <= 9:
                         sudoku[row][col]=str(max(check_row(1,row), check_col(1,col), check_block(1,row,col)))
                         cond = False
                         solve_order.append([row, col])
+                        cont+=1
                     else:
-                        sudoku[solve_order[-1][0]][solve_order[-1][1]]="0"
-                        del solve_order[-1]
-                        sudoku[solve_order[-1][0]][solve_order[-1][1]]=str(int(sudoku[solve_order[-1][0]][solve_order[-1][1]])+1)
+                        while int(sudoku[solve_order[-1][0]][solve_order[-1][1]]) == 9:
+                            sudoku[solve_order[-1][0]][solve_order[-1][1]]="0"
+                            del solve_order[-1]
+                            sudoku[solve_order[-1][0]][solve_order[-1][1]]=str(int(sudoku[solve_order[-1][0]][solve_order[-1][1]])+1)
+                            cont+=1
                         cond = False
+                        print "PROBLEMA"
+
+                    print cont
                     print_sudoku(sudoku)
+
 
 def print_sudoku(sudoku):
     print "---------------------------"
     for item in sudoku:
         print " ".join(item)
 
+#sudoku = [\
+#["5","9","3",'8','7','4','1','2','6'],\
+#["4","6","8",'3','2','1','5','7','9'],\
+#["7","1","2",'6','5','9','8','3','4'],\
+#["2","4","9",'7','1','6','3','5','8'],\
+#["8","7","6",'9','3','5','2','4','1'],\
+#["1","3","5",'2','4','8','6','9','7'],\
+#["6","5","4",'1','9','2','7','8','3'],\
+#["9","8","7",'5','6','3','4','1','2'],\
+#["3","2","1",'4','8','7','9','6','5']]
+
 sudoku = [\
-["5","9","3",'8','7','4','1','2','6'],\
-["4","6","8",'3','2','1','0','7','9'],\
-["7","1","2",'6','5','9','8','3','4'],\
-["2","4","9",'7','1','6','3','5','8'],\
-["8","7","6",'0','3','5','2','4','1'],\
-["1","3","5",'2','4','8','6','9','7'],\
-["6","5","4",'1','9','2','7','8','3'],\
-["9","8","7",'5','6','3','4','1','2'],\
-["3","2","1",'4','8','7','9','6','5']]
+["3","4","0",'8','2','6','0','7','1'],\
+["0","0","8",'0','0','0','9','0','0'],\
+["7","6","0",'0','9','0','0','4','3'],\
+["0","8","0",'1','0','2','0','3','0'],\
+["0","3","0",'0','0','0','0','9','0'],\
+["0","7","0",'9','0','4','0','1','0'],\
+["8","2","0",'0','4','0','0','5','9'],\
+["0","0","7",'0','0','0','3','0','0'],\
+["4","1","0",'3','8','9','0','6','2']]
 
 print_sudoku(sudoku)
 sudoku_solver(sudoku)
